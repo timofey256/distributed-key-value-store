@@ -1,11 +1,23 @@
+#include <iostream>
 #include <string>
 #include <stdexcept>
-#include "utils.h"
+#include <optional>
+#include "utils.hpp"
 
-int customStoi(const std::string& str, const char* msg) {
+
+std::optional<int> tryStoi(const std::string& str) {
     try {
         return std::stoi(str);
     } catch (const std::exception&) {
-        throw std::invalid_argument(msg);
+        return {};
     }
 }
+
+void print_error(std::string msg) {
+    std::cout << "ERROR: " << msg << std::endl;
+}
+
+void print_warning(std::string msg) {
+    std::cout << "WARNING: " << msg << std::endl;
+}
+

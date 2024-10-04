@@ -2,31 +2,32 @@
 #include <vector>
 #include <string>
 #include <optional>
-#include "utils.h"
-
-constexpr const char* COULDNT_PARSE_INTEGER_MESSAGE = "ERROR: Passed arguments are incorrect: couldn't parse a passed argument.";
-constexpr const char* NO_VALUE_AFTER_FLAG_MESSAGE = "ERROR: Passed arguments are incorrect: no value after flag.";
-constexpr const char* NO_ARGUMENTS_MESSAGE = "ERROR: No arguments are passed.";
+#include "utils.hpp"
 
 class Multiplier {
 public:
-    Multiplier(std::optional<int> from, std::optional<int> to) {
+    Multiplier(std::optional<int> from = {}, std::optional<int> to = {}) {
         constexpr int default_from = 1;
         constexpr int default_to   = 10;
+        
+        if (from > to) {
+            print_warning("You have set `from` larger than `to`, your table won't output anything.");
+        }
 
-        _from = from.has_value() ? from.value() : default_from;
-        _to = to.has_value() ? to.value() : default_to;
+        _from = from.value_or(default_from);
+        _to = to.value_or(default_to);
     }
 
-    void display_multiply_table(int multiplier) {
+    void display_multiply_table(int multiplier) const {
         for (int curr = _from; curr <= _to; curr++) {
             std::cout << curr << " * " << multiplier << " = " << curr*multiplier << std::endl;
         }
     }
 
-    void display_multiply_table(std::vector<int> multipliers) {
-        for (auto&& m : multipliers) {
+    void display_multiply_table(const std::vector<int>& multipliers) const {
+        for (const auto& m : multipliers) {
             display_multiply_table(m);
+            std::cout << '\n';
         }
     }
 
@@ -35,37 +36,59 @@ private:
     int _to;
 };
 
-int main(int argc, char* argv[]) {
-    std::vector<std::string> args(argv, argv + argc);
+struct ParsedArguments {
+    std::optional<int> from;
+    std::optional<int> to;
+    std::vector<int> values;
+};
 
-    if (argc == 0) {
-        throw std::invalid_argument(NO_ARGUMENTS_MESSAGE);
+Result<ParsedArguments, std::string> try_parse_arguments(int argc, char** args) {
+    std::string failed_to_parse_int = "Passed arguments are incorrect: couldn't parse a passed argument.";
+    std::string no_value_after_flag = "Passed arguments are incorrect: no value after flag.";
+
+    if (argc == 1) {
+        print_warning("You didn't pass any arguments.");
     }
 
-    std::optional<int> from = {};
-    std::optional<int> to = {};
-    std::vector<int> values;
+    ParsedArguments parsed{{}, {}, {}};
 
     for (int i = 1; i < argc; i++) { // start from 1, because first argument is the name of the project
-        if (args[i] == "-f") {
+        if ((std::string(args[i]) == "-f") || (std::string(args[i]) == "-t")) {
             if (i + 1 >= argc) {
-                throw std::invalid_argument(NO_VALUE_AFTER_FLAG_MESSAGE);
+                return Result<ParsedArguments, std::string>(no_value_after_flag);
             }
-            from = customStoi(args[i + 1], COULDNT_PARSE_INTEGER_MESSAGE);
-            i++;
-        } 
-        else if (args[i] == "-t") {
-            if (i + 1 >= argc) {
-                throw std::invalid_argument(NO_VALUE_AFTER_FLAG_MESSAGE);
+
+            auto result = tryStoi(args[i + 1]);
+            if (!result.has_value()) {
+                return Result<ParsedArguments, std::string>(failed_to_parse_int);
             }
-            to = customStoi(args[i + 1], COULDNT_PARSE_INTEGER_MESSAGE);
+
+            (std::string(args[i]) == "-f" ? parsed.from : parsed.to) = result.value();
             i++;
         }
         else {
-            values.push_back(std::stoi(args[i]));
+            std::cout << args[i] << std::endl;
+            auto result = tryStoi(args[i]);
+            if (!result.has_value()) {
+                return Result<ParsedArguments, std::string>(failed_to_parse_int);
+            }
+            parsed.values.push_back(result.value());
         }
     }
 
-    Multiplier multiplier(from, to);
-    multiplier.display_multiply_table(values);
+    return Result<ParsedArguments, std::string>(parsed);
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+
+    Result<ParsedArguments, std::string> result = try_parse_arguments(argc, argv);
+    
+    if (result.is_error()) {
+        print_error(result.error());
+        return 1;
+    }
+
+    Multiplier multiplier(result.value().from, result.value().to);
+    multiplier.display_multiply_table(result.value().values);
 }
