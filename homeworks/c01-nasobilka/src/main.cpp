@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <optional>
+#include <cstdio>
 #include "utils.hpp"
 
 class Multiplier {
@@ -20,7 +21,7 @@ public:
 
     void display_multiply_table(int multiplier) const {
         for (int curr = _from; curr <= _to; curr++) {
-            std::cout << curr << " * " << multiplier << " = " << curr*multiplier << std::endl;
+            printf("%-3d + %3d = %8d\n", curr, multiplier, curr*multiplier);
         }
     }
 
