@@ -41,7 +41,7 @@ public:
         for (;;) {
             c = s.get();
             if (s.fail())
-                return;
+                break;
             process(c);
         }
         
