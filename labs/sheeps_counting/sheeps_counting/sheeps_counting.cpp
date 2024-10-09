@@ -2,6 +2,7 @@
 #include <cctype>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 /// Character is anything that can be stored in char.
 /// Word      is anything that is separated by whitespace (' ', '\t', '\n', '\r' or whatever for which cctype.isspace(char) emits `true`)
@@ -15,7 +16,7 @@ private:
     std::vector<char> __sentence_separators = { '.', '!', '?' };
 
     bool is_sentence_separator(const char& c) {
-        return std::find(__sentence_separators.begin(), __sentence_separators.end(), c) != std::end(__sentence_separators);
+        return std::find(__sentence_separators.begin(), __sentence_separators.end(), c) != __sentence_separators.end();
     }
 
     void process(const char& c) {
