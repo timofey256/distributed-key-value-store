@@ -38,8 +38,10 @@ void run_test_case(const TestCase& testcase) {
 void test() {
 	std::string small_filepath = "small.txt";
 	std::string big_filepath = "big.txt";
+	std::string test1 = "test1.txt";
 	TestCase small(small_filepath, 13, 2, 1);
-	TestCase big(big_filepath, 14*5+13, 2*6, 6);
+	TestCase big(big_filepath, 14 * 5 + 13, 2 * 6, 6);
+	TestCase test1(test1, 3, 3, 1);
 
 	run_test_case(small);
 	run_test_case(big);
