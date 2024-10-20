@@ -8,7 +8,9 @@ struct TestCase {
 	std::string filepath;
 	int expected_num_of_characters;
 	int expected_num_of_words;
+	int expected_num_of_numbers;
 	int expected_num_of_sentences;
+	int expected_num_of_lines;
 };
 
 void print_equals_error(const std::string& what, 
@@ -33,20 +35,43 @@ void run_test_case(const TestCase& testcase) {
 
 	if (counter.number_of_sentences != testcase.expected_num_of_sentences)
 		print_equals_error("sentences", testcase.filepath, testcase.expected_num_of_sentences, counter.number_of_sentences);
+
+	if (counter.number_of_lines != testcase.expected_num_of_lines)
+		print_equals_error("lines", testcase.filepath, testcase.expected_num_of_lines, counter.number_of_lines);
+
+	if (counter.number_of_numbers != testcase.expected_num_of_numbers)
+		print_equals_error("numbers", testcase.filepath, testcase.expected_num_of_numbers, counter.number_of_numbers);
 }
 
 void test() {
-	std::string small_filepath = "small.txt";
-	std::string big_filepath = "big.txt";
-	std::string test1 = "test1.txt";
-	TestCase small(small_filepath, 13, 2, 1);
-	TestCase big(big_filepath, 14 * 5 + 13, 2 * 6, 6);
-	TestCase test1(test1, 3, 3, 1);
+	std::vector<std::string> test_fp = 
+		{
+			"data/test1.txt", 
+			"data/test2.txt", 
+			"data/test3.txt", 
+			"data/test4.txt",
+			"data/test5.txt", 
+			"data/test6.txt" 
+		};
+	
 
-	run_test_case(small);
-	run_test_case(big);
+	TestCase test1(test_fp[0], 5, 3, 0, 1, 3);
+	TestCase test2(test_fp[1], 39, 5, 3, 2, 1);
+	TestCase test3(test_fp[2], 73, 13, 2, 2, 1);
+	TestCase test4(test_fp[3], 100, 16, 3, 3, 5);
+	TestCase test5(test_fp[4], 13, 2, 0, 1, 1);
+	TestCase test6(test_fp[5], 14 * 5 + 13, 2 * 6, 0, 6, 6);
+
+	std::vector<TestCase> testcases = {test1, test2, test3, test4, test5, test6};
+	
+	for (auto&& testcase : testcases) 
+		run_test_case(testcase);
 }
 
-int main() {
-	test();
-}
+
+// // Uncomment the below and comment `main()` in sheeps_counting.cpp to run tests.
+
+// int main() {
+// 	test();
+// 	return 0;
+// }
