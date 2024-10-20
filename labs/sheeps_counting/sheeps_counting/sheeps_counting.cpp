@@ -32,8 +32,7 @@ private:
     bool were_last_10_chars_a_date()
     {
         if (__last_10_chars.length() != 10)
-            // throw std::invalid_argument(std::format("String {} should have exactly 10 characters long! Something is not right with how you append and/or erase characters."));
-            throw std::invalid_argument("String should have exactly 10 characters long! Something is not right with how you append and/or erase characters.");
+            throw std::invalid_argument("Buffer should have exactly 10 characters long! Something is not right with how you append and/or erase characters.");
 
         std::vector<int> digit_positions = {0, 1, 3, 4, 6, 7, 8, 9};
         std::vector<int> dot_positions = {2, 5};
@@ -72,6 +71,21 @@ private:
 
     void check_for_date(char c) 
     {
+        /*
+            How the below works: 
+            
+            When we encounter first dot of the date, we increase the number of sentences (given that we saw alphanumerical character in this sentence already).
+            So we need to make sure that we don't increase sentence counter again (because we already counted this sentence, although not the right place...)
+            To prevent this, consider two cases:
+
+            1) after DD.MM.YYYY, we get sentence separator (meaning, there were no alphanumerical chars beetween last `Y` and the sentence separator)
+                then, we don't count ".YYYY{ |.|!|?}" as a sentence because of how we agreed what a sentence is - it has to have at least one alphanumerical character.
+                therefore, sentence ends and we do nothing. just continue.
+
+            2) after DD.MM.YYYY, we encounter an alphanumerical character before the sentence separator.
+                this means that now we will increment number of sentences, counting `YYYY[a-Z|0-9]*[.!?]` as a sentence.
+                it is wrong, so just decrement the sentence counter. 
+        */
         if (__was_date && is_sentence_separator(c))
             __was_date = false;
         else if (__was_date && isalpha(c)) 

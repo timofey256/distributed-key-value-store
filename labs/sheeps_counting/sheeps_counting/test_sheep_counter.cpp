@@ -1,8 +1,8 @@
-#include "sheeps_counting.cpp"
 #include <string>
 #include <fstream>
 #include <cassert>
 #include <cstdio>
+#include "sheeps_counting.cpp"
 
 struct TestCase {
 	std::string filepath;
