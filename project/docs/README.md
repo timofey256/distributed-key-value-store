@@ -1,5 +1,3 @@
-## Project Specification and Documentation
+## Project proposal
 
-Put your project proposal in this folder and create a link from this [README](README.md).
-
-Do the same with project documentation later.
+Project proposal can be found in [proposal.md](./proposal.md)
