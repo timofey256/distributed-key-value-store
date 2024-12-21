@@ -2,36 +2,28 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include "main.hpp"
 
-class MultiplicationTable {
-private:
-    int from_;
-    int to_;
-    std::vector<int> numbers_;
+MultiplicationTable::MultiplicationTable() : from_(1), to_(10) {}
 
-public:
-    MultiplicationTable() : from_(1), to_(10) {}
+void MultiplicationTable::setRange(int from, int to) {
+    from_ = from;
+    to_ = to;
+}
 
-    void setRange(int from, int to) {
-        from_ = from;
-        to_ = to;
-    }
+void MultiplicationTable::addNumber(int number) {
+    numbers_.push_back(number);
+}
 
-    void addNumber(int number) {
-        numbers_.push_back(number);
-    }
-
-    void print() const {
-        for (int number : numbers_) {
-            for (int i = from_; i <= to_; ++i) {
-                std::cout << i << " * " << number << " = " 
-                         << (i * number) << std::endl;
-            }
-            std::cout << std::endl;
+void MultiplicationTable::print() const {
+    for (int number : numbers_) {
+        for (int i = from_; i <= to_; ++i) {
+            std::cout << i << " * " << number << " = " 
+                     << (i * number) << std::endl;
         }
+        std::cout << std::endl;
     }
-
-};
+}
 
 void printUsage() {
     std::cout << "Usage: nasobilka [-f from] [-t to] numbers...\n";
