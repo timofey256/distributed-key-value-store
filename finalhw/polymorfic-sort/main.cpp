@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <vector>
 #include "argparser.hpp"
+#include "tablesorter.hpp"
 
 void print_usage() {
     std::cout << "usage: polysort [-i in] [-o out] [-s separator] { type colnum }" << std::endl;
@@ -16,51 +17,52 @@ void print_usage() {
     std::cout << "\tcolumn: číslo logického sloupce (počítáno od 1)" << std::endl;
 }
 
-std::ifstream* open_input_file(const std::string& filepath) {
-    auto* file = new std::ifstream(filepath);
-    if (!file->good()) {
-        delete file;
-        throw std::invalid_argument("Couldn't open input file " + filepath);
+std::ifstream open_input_file(const std::string& filepath) {
+    auto file = std::ifstream(filepath);
+    if (!file.good()) {
+        throw std::invalid_argument("error: Couldn't open input file " + filepath);
     }
     return file;
 }
 
-std::ofstream* open_output_file(const std::string& filepath) {
-    auto* file = new std::ofstream(filepath);
-    if (!file->good()) {
-        delete file;
-        throw std::invalid_argument("Couldn't open output file " + filepath);
+std::ofstream open_output_file(const std::string& filepath) {
+    auto file = std::ofstream(filepath);
+    if (!file.good()) {
+        throw std::invalid_argument("error: Couldn't open output file " + filepath);
     }
     return file;
 }
 
 void run(int argc, char* argv[]) {
     ArgParser argParser(argc, argv);
-
-    // Default values
     std::string separator = " ";
-    std::istream* input = &std::cin;
-    std::ostream* output = &std::cout;
     
+    std::optional<std::ifstream> input_file;
+    std::optional<std::ofstream> output_file;
+    
+    std::istream* input = &std::cin;
     if (auto fileOpt = argParser.get_flag_value("-i")) {
-        input = open_input_file(fileOpt.value());
+        input_file.emplace(open_input_file(fileOpt.value()));
+        input = &input_file.value();
     }
     
+    std::ostream* output = &std::cout;
     if (auto fileOpt = argParser.get_flag_value("-o")) {
-        output = open_output_file(fileOpt.value());
+        output_file.emplace(open_output_file(fileOpt.value()));
+        output = &output_file.value();
     }
     
     if (auto separatorOption = argParser.get_flag_value("-s")) {
         separator = separatorOption.value();
     }
-
+    
     auto cols = argParser.get_columns();
+    TableSorter tableSorter(separator[0], cols);
+    tableSorter.parse(*input);
+    tableSorter.sort();
+    tableSorter.print(*output);
 
-    std::for_each(cols.begin(), cols.end(), 
-        [](const Column& col) {
-            std::cout << col.type << " " << col.idx << "\n";
-        });
-    std::cout << std::endl;
+    // Input and output files are destoyed here at the end, so i don't do this explicitly.
 }
 
 int main(int argc, char* argv[]) {
