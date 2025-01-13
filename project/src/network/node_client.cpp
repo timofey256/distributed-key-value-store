@@ -1,4 +1,3 @@
-// node_client.cpp
 #include "node_client.hpp"
 #include <boost/beast/version.hpp>
 #include <stdexcept>

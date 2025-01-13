@@ -1,4 +1,3 @@
-// http_server.hpp
 #ifndef HTTP_SERVER_HPP
 #define HTTP_SERVER_HPP
 
@@ -15,7 +14,6 @@ namespace http = beast::http;
 namespace net = boost::asio;
 using tcp = boost::asio::ip::tcp;
 
-// Forward declarations
 class HttpSession;
 
 class HttpServer : public std::enable_shared_from_this<HttpServer> {

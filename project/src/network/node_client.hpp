@@ -1,4 +1,3 @@
-// node_client.hpp
 #ifndef NODE_CLIENT_HPP
 #define NODE_CLIENT_HPP
 
