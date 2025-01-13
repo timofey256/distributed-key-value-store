@@ -24,6 +24,6 @@ if ! command -v g++ &> /dev/null; then
     exit 1
 fi
 
-cd ../build
+cd src/build
 cmake ..
 make
