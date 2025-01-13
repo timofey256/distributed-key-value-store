@@ -10,9 +10,9 @@ find_package(Boost 1.74 REQUIRED COMPONENTS
 )
 
 add_executable(kvstore 
-    src/main.cpp
-    src/network/http_server.cpp
-    src/network/node_client.cpp
+    main.cpp
+    network/http_server.cpp
+    network/node_client.cpp
 )
 
 target_include_directories(kvstore PRIVATE
