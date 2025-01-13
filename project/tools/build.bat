@@ -12,6 +12,8 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-cd ../src/build
+cd ../src/
+mkdir build
+cd build
 cmake ..
 cmake --build .
