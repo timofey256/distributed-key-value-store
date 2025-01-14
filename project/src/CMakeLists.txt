@@ -5,6 +5,12 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(BOOST_ROOT "C:/Users/sheti/boost/boost_1_82_0")
+set(BOOST_LIBRARYDIR "C:/Users/sheti/boost/boost_1_82_0/stage/lib")
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
 set(BOOST_MIN_VERSION "1.74.0")
 set(BOOST_REQUIRED_COMPONENTS
     system
