@@ -5,7 +5,7 @@
 You will need `boost`, `cmake` and `g++`. You can either install using the below instructions, or use our tooling in `tools/dependencies/`.
 
 #### For Windows:
-- You need `g++`. Install Visual Studio if you don't have it.
+- You need `g++`. Install Visual Studio if you don't have it: `https://visualstudio.microsoft.com/downloads/`.
 - You need CMake. Go to `https://cmake.org/download/` and install the latest distrubution.
 - You need `boost`. Try to install it with `tools/dependencies/install_boost.bat`. Run this script as administrator. 
 
