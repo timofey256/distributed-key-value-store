@@ -7,7 +7,7 @@ You will need `boost`, `cmake` and `g++`. You can either install using the below
 #### For Windows:
 - You need `g++`. Install Visual Studio if you don't have it.
 - You need CMake. Go to `https://cmake.org/download/` and install the latest distrubution.
-- You need `boost`. Try to install it with `tools/dependencies/install_windows.bat`. Run this script as administrator. 
+- You need `boost`. Try to install it with `tools/dependencies/install_boost.bat`. Run this script as administrator. 
 
 Fallback: if any of these steps fail, google "how to install X on Windows" and proceed. Or just use Linux. :)
 
