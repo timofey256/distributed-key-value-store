@@ -14,19 +14,10 @@ private:
     uint port_;
 
 public:
-    Node(std::string ip, uint port) : ip_(ip), port_(port) {
-        server_ = std::make_shared<HttpServer>(ip, port);
-        client_ = std::make_unique<NodeClient>(ip, port);
-    }
+    Node(std::string ip, uint port);
 
-    void start() {
-        server_->start();
-    }
-
-    std::string get_from_node(unsigned short target_port, const std::string& key) {
-        NodeClient client(ip_, target_port);
-        return client.get(key);
-    }
+    void start();
+    std::string get_from_node(unsigned short target_port, const std::string &key);
 };
 
 #endif
