@@ -1,10 +1,10 @@
 #ifndef NODE_CLIENT_HPP
 #define NODE_CLIENT_HPP
 
+#include <string>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/asio.hpp>
-#include <string>
 
 namespace beast = boost::beast;
 namespace http = beast::http;

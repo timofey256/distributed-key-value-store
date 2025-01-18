@@ -57,7 +57,7 @@ void HttpServer::on_accept(beast::error_code ec) {
 // ----- HttpSession implementation -----
 
 HttpSession::HttpSession(tcp::socket&& socket)
-    : stream_(std::move(socket))
+    : tcp_stream_(std::move(socket))
     , buffer_(8192) {
 }
 
@@ -66,18 +66,16 @@ void HttpSession::run() {
 }
 
 void HttpSession::do_read() {
-    stream_.expires_after(std::chrono::seconds(30));
+    tcp_stream_.expires_after(std::chrono::seconds(30));
 
     http::async_read(
-        stream_,
+        tcp_stream_,
         buffer_,
         request_,
         beast::bind_front_handler(&HttpSession::on_read, shared_from_this()));
 }
 
 void HttpSession::on_read(beast::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-
     if (ec) {
         std::cerr << "Read error: " << ec.message() << std::endl;
         return;
@@ -127,19 +125,22 @@ void HttpSession::do_write() {
     response_.set(http::field::content_length, std::to_string(response_.body().size()));
 
     http::async_write(
-        stream_,
+        tcp_stream_,
         response_,
         beast::bind_front_handler(&HttpSession::on_write, shared_from_this()));
 }
 
 void HttpSession::on_write(beast::error_code ec, std::size_t bytes_transferred) {
-    boost::ignore_unused(bytes_transferred);
-
     if (ec) {
         std::cerr << "Write error: " << ec.message() << std::endl;
         return;
     }
 
-    beast::error_code ec_shutdown;
-    stream_.socket().shutdown(tcp::socket::shutdown_send, ec_shutdown);
+    
+    if (response_.keep_alive()) { // persistent connection
+        do_read();
+    } else { // one connection = one request-response cycle
+        beast::error_code ec_shutdown;
+        tcp_stream_.socket().shutdown(tcp::socket::shutdown_send, ec_shutdown);
+    }
 }

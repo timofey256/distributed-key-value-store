@@ -44,7 +44,7 @@ private:
     void do_write();
     void on_write(beast::error_code ec, std::size_t bytes_transferred);
 
-    beast::tcp_stream stream_;
+    beast::tcp_stream tcp_stream_;
     beast::flat_buffer buffer_;
     http::request<http::string_body> request_;
     http::response<http::string_body> response_;
